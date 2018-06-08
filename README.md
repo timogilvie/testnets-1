@@ -52,7 +52,7 @@ Now we can fetch the correct versions of each dependency by running:
 ```
 mkdir -p $GOPATH/src/github.com/cosmos/cosmos-sdk
 git clone https://github.com/cosmos/cosmos-sdk.git
-git checkout v0.17.5
+git checkout v0.18.0-rc0
 make get_tools // run $ make update_tools if already installed
 make get_vendor_deps
 make install
@@ -67,7 +67,7 @@ gaiad version
 You should see:
 
 ```
-0.17.5-cf46be22
+0.18.0-dev-af15f89
 ```
 
 And also:
@@ -79,38 +79,23 @@ gaiacli version
 You should see:
 
 ```
-0.17.5-cf46be22
+0.18.0-dev-af15f89
 ```
 
-## Genesis Setup
+## Full Node Setup
 
-### Making your own genesis transaction
-
-Create your own genesis transactions
-
-```
-gaiad init gen-tx --name YOUR_NAME
-```
-
-Copy the JSON value under `gen_tx_file` into `YOUR_NAME.json` in the appropriate folder on this Github repository.
-
-### Retrieving & combining genesis transactions
-
-Genesis files are the starting point for the full-node to sync up with the network. In order to sync up with the correct version of the Testnet, be sure to choose the genesis file corresponding to the version of the Testnet you want to connect to.
-
-Now that we have completed the basic SDK setup, we can start working on the genesis configuration for the chain we want to connect to.
-
-Get the genesis transactions
+Clone the testnet repo.
 
 ```
 git clone https://github.com/cosmos/testnets
 
 mkdir -p $HOME/.gaiad/config
-cp -a testnets/gaia-5001/. $HOME/.gaiad/config/gentx
+cp -a testnets/gaia-6000/genesis.json $HOME/.gaiad/config/genesis.json
 gaiad unsafe_reset_all
-gaiad init --gen-txs -o --chain-id=gaia-5001
-
 ```
+
+Add a seed node by changing `seed = ""` in `config.toml` to `seed = "80a35a46ce09cfb31ee220c8141a25e73e0b239b@35.198.166.171:46656"`.
+
 Lastly change the `moniker` string in the`config.toml`to identify your node.
 
 ```
@@ -159,7 +144,7 @@ gaiacli keys list
 The validator pubkey from your node should be the same as the one printed with the command:
 
 ```
-gaiad show_validator
+gaiad tendermint show_validator
 ```
 
 Finally, save your address and pubkey into a variable to use them afterwards.
